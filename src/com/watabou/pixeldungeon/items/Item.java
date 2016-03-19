@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import com.lycansoft.pixeldungeon.ml.R;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.pixeldungeon.Assets;
 import com.watabou.pixeldungeon.Badges;
@@ -69,8 +71,10 @@ public class Item implements Bundlable {
 	protected static final float TIME_TO_PICK_UP	= 1.0f;
 	protected static final float TIME_TO_DROP		= 0.5f;
 	
-	public static final String AC_DROP		= "DROP";
+	public static final String AC_DROP		= "DROP1";
 	public static final String AC_THROW		= "THROW";
+//	public static final String AC_DROP  = Game.getVar(R.string.Item_ACDrop);
+//	public static final String AC_THROW = Game.getVar(R.string.Item_ACThrow);
 	
 	public String defaultAction;
 	

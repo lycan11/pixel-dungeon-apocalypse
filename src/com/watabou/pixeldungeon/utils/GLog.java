@@ -17,12 +17,22 @@
  */
 package com.watabou.pixeldungeon.utils;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+
+import com.lycansoft.android.util.FileSystem;
+import com.watabou.noosa.Game;
 import com.watabou.utils.Signal;
 
 import android.util.Log;
 
 public class GLog {
 
+	private static final String RE_PD_LOG_FILE_LOG = "RePdLogFile.log";
+	
 	public static final String TAG = "GAME";
 	
 	public static final String POSITIVE		= "++ ";
@@ -31,6 +41,51 @@ public class GLog {
 	public static final String HIGHLIGHT	= "@@ ";
 	
 	public static Signal<String> update = new Signal<String>();
+	
+	private static FileWriter logWriter;
+	private static boolean readonlySd = false;
+	
+	public static synchronized void toFile(String text, Object... args) {
+		if(readonlySd) {
+			return;
+		}
+		
+		if(logWriter==null) {
+			File logFile = FileSystem.getExternalStorageFile(RE_PD_LOG_FILE_LOG);
+			
+			if(logFile.length() > 1024*1024) {
+				try {
+					logFile.createNewFile();
+				} catch (IOException e) {
+					readonlySd = true;
+					return;
+				}
+			}
+			
+			try {
+				logWriter = new FileWriter(logFile,true);
+				toFile("log started %s !", Game.version);
+			} catch (Exception e) {
+				readonlySd = true;
+				return;
+			}
+		}
+		
+		Date today = Calendar.getInstance().getTime(); 
+		
+		if (args.length > 0) {
+			text = Utils.format( text, args );
+		}
+		
+		text = today.toString() + "\t" + text + "\n";
+		
+		try {
+			logWriter.write(text);
+			logWriter.flush();
+		} catch (IOException e) {
+			readonlySd = true;
+		}
+	}
 	
 	public static void i( String text, Object... args ) {
 		
